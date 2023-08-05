@@ -9,4 +9,22 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc() : super(const NotificationsState()) {
     // on<NotificationsEvent>();
   }
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  void requesPermission() async {
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: true,
+      provisional: false,
+      sound: true,
+    );
+
+    settings.authorizationStatus;
+  }
+
 }
