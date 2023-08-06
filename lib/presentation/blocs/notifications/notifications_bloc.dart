@@ -24,7 +24,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc() : super(const NotificationsState()) {
 
-    on<NotificationsStatusChanged>(_notificationsStatusChanged);
+    on<NotificationsStatusChanged>(_onNotificationsStatusChanged);
+    // TODO: 3. Build handler _onPushMessageReceived
+    on<NotificationReceived>(_onPushMessageReceived);
 
     // Checking the notifications permissions
     _initialStatusCheck();
@@ -41,7 +43,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     );
   }
 
-  void _notificationsStatusChanged(
+  void _onNotificationsStatusChanged(
     NotificationsStatusChanged event, Emitter<NotificationsState> emit
   ) {
     emit(
@@ -50,6 +52,16 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       )
     );
     _getFCMToken();
+  }
+
+  void _onPushMessageReceived(
+    NotificationReceived event, Emitter<NotificationsState> emit
+  ) {
+    emit(
+      state.copyWith(
+        notifications: [...state.notifications, event.notification]
+      )
+    );
   }
 
   void _initialStatusCheck() async {
@@ -70,6 +82,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     // print('Message data: ${message.data}');
     if (message.notification == null) return;
     //print('Message also contained a notification: ${message.notification}');
+    // TODO: Its posible create a mapper to apply clean code
     final notification = PushMessage(
       messageId: message.messageId
         ?.replaceAll(':', '').replaceAll('%', '') // To haven't conflict with go_router
@@ -83,7 +96,9 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         : message.notification!.apple?.imageUrl
     );
 
-    print(notification);
+    // print(notification);
+    //TODO: 1. add a new event
+    add(NotificationReceived(notification));
 
   }
 
