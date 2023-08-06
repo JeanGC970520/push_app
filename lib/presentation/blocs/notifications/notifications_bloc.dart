@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:push_app/firebase_options.dart';
+
+import '../../../domain/entities/push_message.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
@@ -62,12 +66,25 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   void _handleRemoteMessage( RemoteMessage message ) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
-
+    // print('Got a message whilst in the foreground!');
+    // print('Message data: ${message.data}');
     if (message.notification == null) return;
-   
-    print('Message also contained a notification: ${message.notification}');
+    //print('Message also contained a notification: ${message.notification}');
+    final notification = PushMessage(
+      messageId: message.messageId
+        ?.replaceAll(':', '').replaceAll('%', '') // To haven't conflict with go_router
+        ?? '', 
+      title: message.notification?.title ?? '', 
+      body: message.notification?.body ?? '', 
+      sendDate: message.sentTime ?? DateTime.now(),
+      data: message.data,
+      imageUrl: Platform.isAndroid 
+        ? message.notification!.android?.imageUrl
+        : message.notification!.apple?.imageUrl
+    );
+
+    print(notification);
+
   }
 
   void _onForegroundMessage() {
