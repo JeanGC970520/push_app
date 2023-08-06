@@ -10,7 +10,9 @@ part 'notifications_state.dart';
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc() : super(const NotificationsState()) {
-    // on<NotificationsEvent>();
+
+    on<NotificationsStatusChanged>(_notificationsStatusChanged);
+
   }
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -18,6 +20,16 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   static Future<void> initializeFirebase() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  void _notificationsStatusChanged(
+    NotificationsStatusChanged event, Emitter<NotificationsState> emit
+  ) {
+    emit(
+      state.copyWith(
+        status: event.status,
+      )
     );
   }
 
@@ -33,7 +45,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       sound: true,
     );
 
-    settings.authorizationStatus;
+    add( NotificationsStatusChanged(settings.authorizationStatus) );
   }
 
 }
