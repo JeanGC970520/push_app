@@ -7,15 +7,14 @@ class NotificationsState extends Equatable {
   });
   
   final AuthorizationStatus status;
-  // TODO: Create notifications model
-  final List<dynamic> notifications;
+  final List<PushMessage> notifications;
   
   @override
   List<Object> get props => [ status, notifications ];
 
   NotificationsState copyWith({
     AuthorizationStatus? status, 
-    List<dynamic>? notifications,
+    List<PushMessage>? notifications,
   }) {
     return NotificationsState(
       status: status ?? this.status,
