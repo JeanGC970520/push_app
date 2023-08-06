@@ -13,6 +13,9 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     on<NotificationsStatusChanged>(_notificationsStatusChanged);
 
+    // Checking the notifications permissions
+    _initialStatusCheck();
+
   }
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -31,6 +34,20 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         status: event.status,
       )
     );
+    _getFCMToken();
+  }
+
+  void _initialStatusCheck() async {
+    final setting = await messaging.getNotificationSettings();
+    add( NotificationsStatusChanged(setting.authorizationStatus) );
+  }
+
+  // Get token Firebase Cloud Messaging
+  void _getFCMToken() async {
+    if( state.status != AuthorizationStatus.authorized ) return; 
+
+    final token = await messaging.getToken();
+    print(token); // The token is unique on every app installation
   }
 
   void requesPermission() async {
