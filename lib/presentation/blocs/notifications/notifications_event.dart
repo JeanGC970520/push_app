@@ -9,7 +9,7 @@ class NotificationsStatusChanged extends NotificationsEvent {
   final AuthorizationStatus status;
 }
 
-//TODO: 2. create NotificationReceived with an argument PushMessage
+// * event to notify that a notification arraived
 class NotificationReceived extends NotificationsEvent {
   NotificationReceived(this.notification);
   final PushMessage notification;

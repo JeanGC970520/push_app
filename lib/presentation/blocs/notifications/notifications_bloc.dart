@@ -17,6 +17,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
+  // TODO: Recomendation: here save the notification on a DB or any local storage
 
   print("Handling a background message: ${message.messageId}");
 }
@@ -25,7 +26,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc() : super(const NotificationsState()) {
 
     on<NotificationsStatusChanged>(_onNotificationsStatusChanged);
-    // TODO: 3. Build handler _onPushMessageReceived
+    // Listener to listen a notification arraived
     on<NotificationReceived>(_onPushMessageReceived);
 
     // Checking the notifications permissions
@@ -54,12 +55,13 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     _getFCMToken();
   }
 
+  // * Handler to manage a notification arraived
   void _onPushMessageReceived(
     NotificationReceived event, Emitter<NotificationsState> emit
   ) {
     emit(
       state.copyWith(
-        notifications: [...state.notifications, event.notification]
+        notifications: [ event.notification, ...state.notifications ]
       )
     );
   }
@@ -97,7 +99,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     );
 
     // print(notification);
-    //TODO: 1. add a new event
+    // * add a new event to notify that a notification arraived
     add(NotificationReceived(notification));
 
   }
