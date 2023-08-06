@@ -15,6 +15,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     // Checking the notifications permissions
     _initialStatusCheck();
+    // Listen Firebase Cloude message on Foreground case
+    _onForegroundMessage();
 
   }
 
@@ -48,6 +50,19 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     final token = await messaging.getToken();
     print(token); // The token is unique on every app installation
+  }
+
+  void _handleRemoteMessage( RemoteMessage message ) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+
+    if (message.notification == null) return;
+   
+    print('Message also contained a notification: ${message.notification}');
+  }
+
+  void _onForegroundMessage() {
+    FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
   }
 
   void requesPermission() async {
