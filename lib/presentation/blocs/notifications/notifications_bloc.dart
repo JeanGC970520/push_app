@@ -79,7 +79,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     print(token); // The token is unique on every app installation
   }
 
-  void _handleRemoteMessage( RemoteMessage message ) {
+  void handleRemoteMessage( RemoteMessage message ) {
     // print('Got a message whilst in the foreground!');
     // print('Message data: ${message.data}');
     if (message.notification == null) return;
@@ -105,7 +105,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   void _onForegroundMessage() {
-    FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
+    FirebaseMessaging.onMessage.listen(handleRemoteMessage);
   }
 
   void requesPermission() async {
