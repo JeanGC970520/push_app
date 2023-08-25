@@ -38,22 +38,24 @@ class _DetailsView extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-      child: Column(
-        children: [
-
-          if( message.imageUrl != null )
-            Image.network( message.imageUrl! ),
-
-          const SizedBox(height: 30,),
-
-          Text( message.title, style: textStyles.titleMedium, ),
-          Text( message.body, ),
-
-          const Divider(),
-
-          Text( message.data.toString() ),
-
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+      
+            if( message.imageUrl != null )
+              Image.network( message.imageUrl! ),
+      
+            const SizedBox(height: 30,),
+      
+            Text( message.title, style: textStyles.titleMedium, ),
+            Text( message.body, ),
+      
+            const Divider(),
+      
+            Text( message.data.toString() ),
+      
+          ],
+        ),
       ),
     );
   }
